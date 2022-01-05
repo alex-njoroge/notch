@@ -1,5 +1,8 @@
 package notch;
 
+import java.util.Map;
+import java.util.HashMap;
+
 import redis.clients.jedis.Jedis;
 
 /**
@@ -87,5 +90,26 @@ public class Notch {
 	 */
 	public long getPageSize() {
 		return pageSize;
+	}
+
+	/**
+	 * Adds one member to the leaderboard.
+	 *
+	 * @param memberName the name of the member
+	 * @param score the score of the member
+	 * @return the number of members added (excluding score updates)
+	 */
+	public long rankMember(String memberName, double score) {
+		return jedis.zadd(leaderboardName, score, memberName);
+	}
+
+	/**
+	 * Adds multiple members to the leaderboard.
+	 *
+	 * @param memberScores a key/value collection of members with their scores
+	 * @return the number of members added (excluding score updates)
+	 */
+	public long rankMember(Map<String, Double> memberScores) {
+		return jedis.zadd(leaderboardName, memberScores);
 	}
 }
