@@ -1,0 +1,12 @@
+target/
+.project
+.classpath
+.settings/
+*.log
+*.tmp
+*.class
+*.jar
+*.war
+*.zip
+*.tar
+*.tar.gz
