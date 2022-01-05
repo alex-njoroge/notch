@@ -125,4 +125,42 @@ public class Notch {
 		}
 		return true;
 	}
+
+	/**
+	 * Gets the score of a member.
+	 *
+	 * @param memberName the name of the member
+	 * @return the score of a member
+	 */
+	public Double scoreOf(String memberName) {
+		return jedis.zscore(leaderboardName, memberName);
+	}
+
+	/**
+	 * Gets the rank of a member.
+	 *
+	 * @param memberName the name of the member
+	 * @return the 1-based (the member with the highest score has rank 1)
+	 * rank of a member
+	 */
+	public Long rankOf(String memberName) {
+		Long rank = jedis.zrevrank(leaderboardName, memberName);
+		if (rank != null) {
+			rank++;
+		}
+		return rank;
+	}
+
+	/**
+	 * Gets the score and rank of a member.
+	 *
+	 * @param memberName the name of the member
+	 * @return a key/value collection of a member's score and rank
+	 */
+	public HashMap<String, Object> scoreAndRankOf(String memberName) {
+		HashMap<String, Object> data = new HashMap<>();
+		data.put("score", scoreOf(memberName));
+		data.put("rank", rankOf(memberName));
+		return data;
+	}
 }

@@ -56,6 +56,30 @@ public class NotchTest {
 		assertFalse(notch.checkMember("seed_six"));
 	}
 
+	@Test
+	public void testScoreOf() {
+		notch.rankMember("member_one", 45);
+
+		assertEquals(45.0, notch.scoreOf("member_one"));
+	}
+
+	@Test
+	public void testRankOf() {
+		addMembersToLeaderboard();
+
+		assertEquals(5L, notch.rankOf("seed_five"));
+		assertEquals(1L, notch.rankOf("seed_one"));
+	}
+
+	@Test
+	public void testScoreAndRankOf() {
+		addMembersToLeaderboard();
+
+		HashMap<String, Object> sr = notch.scoreAndRankOf("seed_three");
+		assertEquals(63.0, sr.get("score"));
+		assertEquals(3L, sr.get("rank"));
+	}
+
 	private void addMembersToLeaderboard() {
 		Map<String, Double> members = new HashMap<>();
 		members.put("seed_one", 89d);
