@@ -1,9 +1,14 @@
 package notch;
 
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
+import redis.clients.jedis.resps.Tuple;
 import redis.clients.jedis.Jedis;
+
+import notch.resps.MemberData;
 
 /**
  * The main entity that creates a leaderboard and performs various
@@ -162,5 +167,51 @@ public class Notch {
 		data.put("score", scoreOf(memberName));
 		data.put("rank", rankOf(memberName));
 		return data;
+	}
+
+	/**
+	 * Retrieves information about all members.
+	 *
+	 * @return all members in the leaderboard with their names, scores and ranks
+	 */
+	public List<MemberData> allMembers() {
+		return kneadRawMemberData(jedis.zrevrangeWithScores(leaderboardName, 0, -1));
+	}
+
+	/**
+	 * Retrieves information about members within a score range.
+	 *
+	 * @param min the lower score limit
+	 * @param max the upper score limit
+	 * @return members within the score range with their names, scores and ranks
+	 */
+	public List<MemberData> membersinScoreRange(double min, double max) {
+		return kneadRawMemberData(jedis.zrevrangeByScoreWithScores(leaderboardName, max, min));
+	}
+
+	/**
+	 * Retrieves information about members within a rank range.
+	 *
+	 * @param start the lower rank limit
+	 * @param stop the upper rank limit
+	 * @return members within the rank range with their names, scores and ranks
+	 */
+	public List<MemberData> membersinRankRange(long start, long stop) {
+		return kneadRawMemberData(jedis.zrevrangeWithScores(leaderboardName, start-1, stop-1));
+	}
+
+	/**
+	 * Utility method to sanitize element data returned by {@code Jedis} and return
+	 * it in an organized format with additional information.
+	 *
+	 * @param rawMemberData data returned by a {@code Jedis} method
+	 * @return sanitized data objects with utility methods
+	 */
+	private List<MemberData> kneadRawMemberData(List<Tuple> rawMemberData) {
+		List<MemberData> kneaded = new ArrayList<>();
+		for(Tuple raw: rawMemberData) {
+			kneaded.add(new MemberData(raw.getElement(), raw.getScore(), rankOf(raw.getElement())));
+		}
+		return kneaded;
 	}
 }
