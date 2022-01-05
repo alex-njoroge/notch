@@ -91,6 +91,14 @@ public class NotchTest {
 		assertEquals(2L, at.getRank());
 	}
 
+	@Test
+	public void testChangeScore() {
+		addMembersToLeaderboard();
+
+		notch.changeScore("seed_four", 29);
+		assertEquals(29.0, notch.scoreOf("seed_four"));
+	}
+
 	private void addMembersToLeaderboard() {
 		Map<String, Double> members = new HashMap<>();
 		members.put("seed_one", 89d);

@@ -244,6 +244,28 @@ public class Notch {
 	}
 
 	/**
+	 * Changes the score of a member.
+	 *
+	 * @param memberName the name of the member
+	 * @param score the new score
+	 * @return the number of members whose score has been changed
+	 */
+	public long changeScore(String memberName, double score) {
+		return jedis.zadd(leaderboardName, score, memberName);
+	}
+
+	/**
+	 * Changes the score of a member by some amount.
+	 *
+	 * @param memberName the name of the member
+	 * @param delta the amount to change by
+	 * @return the new score of the member
+	 */
+	public double updateScore(String memberName, double delta) {
+		return jedis.zincrby(leaderboardName, delta, memberName);
+	}
+
+	/**
 	 * Utility method to sanitize element data returned by {@code Jedis} and return
 	 * it in an organized format with additional information.
 	 *
