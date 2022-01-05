@@ -112,4 +112,17 @@ public class Notch {
 	public long rankMember(Map<String, Double> memberScores) {
 		return jedis.zadd(leaderboardName, memberScores);
 	}
+
+	/**
+	 * Checks whether a member is in the leaderboard.
+	 *
+	 * @param memberName the name of the member
+	 * @return whether or not the member exists
+	 */
+	public boolean checkMember(String memberName) {
+		if (jedis.zscore(leaderboardName, memberName) == null) {
+			return false;
+		}
+		return true;
+	}
 }

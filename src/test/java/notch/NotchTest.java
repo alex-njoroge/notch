@@ -47,4 +47,22 @@ public class NotchTest {
 
 		assertEquals(5L, notch.totalMembers());
 	}
+
+	@Test
+	public void testCheckMember() {
+		addMembersToLeaderboard();
+
+		assertTrue(notch.checkMember("seed_one"));
+		assertFalse(notch.checkMember("seed_six"));
+	}
+
+	private void addMembersToLeaderboard() {
+		Map<String, Double> members = new HashMap<>();
+		members.put("seed_one", 89d);
+		members.put("seed_two", 75d);
+		members.put("seed_three", 63d);
+		members.put("seed_four", 34d);
+		members.put("seed_five", 23d);
+		notch.rankMember(members);
+	}
 }
