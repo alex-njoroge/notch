@@ -201,6 +201,49 @@ public class Notch {
 	}
 
 	/**
+	 * Retrieves information about the member at a specific rank.
+	 *
+	 * @param rank the rank of the member
+	 * @return the member's name, score and rank
+	 */
+	public MemberData memberAt(long rank) {
+		Tuple raw = (jedis.zrevrangeWithScores(leaderboardName, rank-1, rank-1)).get(0);
+		return new MemberData(raw.getElement(), raw.getScore(), rankOf(raw.getElement()));
+	}
+
+	/**
+	 * Retrieves information about the first page of the leaderboard.
+	 *
+	 * @return members in the first page with their names, scores and ranks
+	 */
+	public List<MemberData> firstPage() {
+		return kneadRawMemberData(jedis.zrevrangeWithScores(leaderboardName, 0, pageSize-1));
+	}
+
+	/**
+	 * Retrieves information about the last page of the leaderboard.
+	 *
+	 * @return members in the last page with their names, scores and ranks
+	 */
+	public List<MemberData> lastPage() {
+		return kneadRawMemberData(jedis.zrevrangeWithScores(leaderboardName, -pageSize, -1));
+	}
+
+	/**
+	 * Retrieves information about members above and below a specific member.
+	 *
+	 * @param memberName the name of the member
+	 * @return members around with their names, scores and ranks
+	 */
+	public List<MemberData> around(String memberName) {
+		Long rank = rankOf(memberName);
+		List<Tuple> upper = jedis.zrevrangeWithScores(leaderboardName, 0, rank-2);
+		List<Tuple> lower = jedis.zrevrangeWithScores(leaderboardName, rank, -1);
+		upper.addAll(lower);
+		return kneadRawMemberData(upper);
+	}
+
+	/**
 	 * Utility method to sanitize element data returned by {@code Jedis} and return
 	 * it in an organized format with additional information.
 	 *

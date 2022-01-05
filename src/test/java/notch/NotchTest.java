@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import redis.clients.jedis.Jedis;
 
 import notch.Notch;
+import notch.resps.MemberData;
 
 public class NotchTest {
 	private static Notch notch;
@@ -78,6 +79,16 @@ public class NotchTest {
 		HashMap<String, Object> sr = notch.scoreAndRankOf("seed_three");
 		assertEquals(63.0, sr.get("score"));
 		assertEquals(3L, sr.get("rank"));
+	}
+
+	@Test
+	public void testMemberAt() {
+		addMembersToLeaderboard();
+
+		MemberData at = notch.memberAt(2);
+		assertEquals("seed_two", at.getMemberName());
+		assertEquals(75.0, at.getScore());
+		assertEquals(2L, at.getRank());
 	}
 
 	private void addMembersToLeaderboard() {
