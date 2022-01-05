@@ -107,6 +107,13 @@ public class NotchTest {
 		assertFalse(notch.checkMember("seed_six"));
 	}
 
+	@Test
+	public void testTotalMembers() {
+		addMembersToLeaderboard();
+
+		assertEquals(5, notch.totalMembers());
+	}
+
 	private void addMembersToLeaderboard() {
 		Map<String, Double> members = new HashMap<>();
 		members.put("seed_one", 89d);

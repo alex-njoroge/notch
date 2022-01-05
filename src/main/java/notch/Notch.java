@@ -286,6 +286,34 @@ public class Notch {
 	}
 
 	/**
+	 * Gets the total number of members in the leaderboard.
+	 *
+	 * @return the number of members
+	 */
+	public long totalMembers() {
+		return jedis.zcard(leaderboardName);
+	}
+
+	/**
+	 * Gets the total number of pages in the leaderboard.
+	 *
+	 * @return the number of pages
+	 */
+	public long totalPages() {
+		return totalMembers() / pageSize;
+	}
+
+	/**
+	 * Deletes the specified leaderboard(s).
+	 *
+	 * @param name the leaderboard name
+	 * @return the number of leaderboards deleted
+	 */
+	public long deleteLeaderboard(String... name) {
+		return jedis.del(name);
+	}
+
+	/**
 	 * Utility method to sanitize element data returned by {@code Jedis} and return
 	 * it in an organized format with additional information.
 	 *
