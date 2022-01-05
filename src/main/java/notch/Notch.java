@@ -266,6 +266,26 @@ public class Notch {
 	}
 
 	/**
+	 * Removes member(s) from the leaderboard.
+	 *
+	 * @param memberName the name of the member
+	 * @return the number of members removed
+	 */
+	public long removeMember(String... memberName) {
+		return jedis.zrem(leaderboardName, memberName);
+	}
+
+	/**
+	 * Removes members with and below a specific score.
+	 *
+	 * @param score
+	 * @return the number of members removed
+	 */
+	public long removeMembersBelow(String score) {
+		return jedis.zremrangeByScore(leaderboardName, "-inf", String.valueOf(Integer.parseInt(score)-1));
+	}
+
+	/**
 	 * Utility method to sanitize element data returned by {@code Jedis} and return
 	 * it in an organized format with additional information.
 	 *

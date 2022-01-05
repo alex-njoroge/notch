@@ -99,6 +99,14 @@ public class NotchTest {
 		assertEquals(29.0, notch.scoreOf("seed_four"));
 	}
 
+	@Test
+	public void testRemoveMember() {
+		addMembersToLeaderboard();
+
+		notch.removeMember("seed_five");
+		assertFalse(notch.checkMember("seed_six"));
+	}
+
 	private void addMembersToLeaderboard() {
 		Map<String, Double> members = new HashMap<>();
 		members.put("seed_one", 89d);
